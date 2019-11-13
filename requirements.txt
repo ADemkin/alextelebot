@@ -1,0 +1,4 @@
+flake8==3.7.9
+mypy==0.740
+pylint==2.4.3
+pyTelegramBotAPI==3.6.6
