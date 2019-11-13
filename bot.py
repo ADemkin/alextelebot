@@ -1,3 +1,4 @@
+from copy import deepcopy
 from random import choice
 from random import shuffle
 from typing import List
@@ -41,26 +42,24 @@ def get_user(message: Message) -> str:
 class Messages:
     def __init__(self, storage: Storage) -> None:
         self.storage = storage
-        self.last_messages: List[str] = []
-        self.all_messages: List[str] = list(self.storage.load())
+        self.all: List[str] = list(self.storage.load())
+        self.current: List[str] = self._get_all_shuffled()
+
+    def _get_all_shuffled(self) -> List[str]:
+        current = deepcopy(self.all)
+        shuffle(current)
+        return current
 
     def get(self) -> str:
-        if not self.all_messages:
-            return ''
-        if len(self.all_messages) < 10:
-            return choice(self.all_messages)
-        while True:
-            message = choice(self.all_messages)
-            if message in self.last_messages:
-                continue
-            if len(self.last_messages) > 10:
-                self.last_messages.pop(0)
-            self.last_messages.append(message)
-            return message
+        if not self.current:
+            if not self.all:
+                return ''
+            self.current = self._get_all_shuffled()
+        return self.current.pop()
 
     def add(self, message: str) -> None:
-        self.all_messages.append(str(message))
-        self.storage.save(self.all_messages)
+        self.all.append(message)
+        self.storage.save(sorted(self.all))
 
 
 messages = Messages(Storage("messages.json"))
@@ -101,11 +100,11 @@ def stat(message):
     logger.info("%s asked for stat", get_user(message))
     bot.send_message(
         message.chat.id,
-        "I have total {} messages".format(len(messages.all_messages)),
+        "I have total {} messages".format(len(messages.current)),
     )
 
 
 if __name__ == '__main__':
     logger.info("Started")
-    logger.info("%d messages loaded", len(messages.all_messages))
+    logger.info("%d messages loaded", len(messages.current))
     bot.polling()
