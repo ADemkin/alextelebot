@@ -48,3 +48,13 @@ class TestMessages(TestCase):
         messages = Messages(storage)
         storage.load.assert_called_with()
         self.assertEqual(messages.get(), '')
+
+
+    @given(d=st.data())
+    def test_messages_len(self, d: Any) -> None:
+        messages_all = d.draw(st.lists(st.just(0)))
+        storage = MagicMock()
+        storage.load.return_value = messages_all
+        messages = Messages(storage)
+        storage.load.assert_called_with()
+        self.assertEqual(len(messages), len(messages_all))
