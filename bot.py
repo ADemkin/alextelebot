@@ -63,6 +63,9 @@ class Messages:
         self.all.append(message)
         self.storage.save(sorted(self.all))
 
+    def __len__(self):
+        return len(self.all)
+
 
 messages = Messages(Storage("messages.json"))
 
@@ -102,11 +105,11 @@ def stat(message):
     logger.info("%s asked for stat", get_user(message))
     bot.send_message(
         message.chat.id,
-        "I have total {} messages".format(len(messages.current)),
+        "I have total {} messages".format(len(messages)),
     )
 
 
 if __name__ == '__main__':
     logger.info("Started")
-    logger.info("%d messages loaded", len(messages.current))
+    logger.info("%d messages loaded", len(messages))
     bot.polling()
