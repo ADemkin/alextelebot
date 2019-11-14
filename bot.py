@@ -17,8 +17,10 @@ logger = logging.getLogger(__name__)
 FORMAT = '%(asctime)s: %(message)s'
 logging.basicConfig(level="INFO", format=FORMAT)
 
+with open("token", "rb") as fd:
+    token = fd.read().decode("ascii")
 
-bot = TeleBot("916790500:AAEvH6zgk0WdYikMZ5gtPWdLAwc19o5TrME")
+bot = TeleBot(token)
 
 
 def get_user(message: Message) -> str:
