@@ -84,12 +84,18 @@ def _add(message):
 
 
 def add_message(message):
-    new_msg = message.text
-    messages.add(str(new_msg))
-    logger.info("%s added new message: '%s'", get_user(message), new_msg)
+    message_to_add = message.text
+    if "/" in message_to_add:
+        bot.send_message(message.chat.id, "Can not add command")
+        return
+    # TODO: Check message time and maybe exit on timeout
+    # (Pdb) message.date
+    # 1573766611
+    messages.add(message_to_add)
+    logger.info("%s added new message: '%s'", get_user(message), message_to_add)
     bot.send_message(
         message.chat.id,
-        "New message stored!\n{}".format(new_msg),
+        "New message stored!\n{}".format(message_to_add),
     )
 
 
