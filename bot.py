@@ -82,6 +82,9 @@ def _add(message):
 
 
 def add_message(message):
+    if "/" in message:
+        bot.send_message(message.chat.id, "Can not add command")
+    # TODO: Check message time and maybe exit on timeout
     new_msg = message.text
     messages.add(str(new_msg))
     logger.info("%s added new message: '%s'", get_user(message), new_msg)
